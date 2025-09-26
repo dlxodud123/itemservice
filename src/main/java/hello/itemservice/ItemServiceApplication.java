@@ -21,6 +21,6 @@ public class ItemServiceApplication {
 	@Profile("local")
 	public TestDataInit testDataInit(ItemRepository itemRepository) {
 		return new TestDataInit(itemRepository);
-	}
+	} 
 
 }
