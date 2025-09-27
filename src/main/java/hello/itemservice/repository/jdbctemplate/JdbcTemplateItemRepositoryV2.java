@@ -103,7 +103,7 @@ public class JdbcTemplateItemRepositoryV2 implements ItemRepository {
 
 
     private RowMapper<Item> itemRowMapper() {
-        // 객체로 변환해주는 매퍼 생성기
+        // 객체로 변환해주는 매퍼 생성기 
         return BeanPropertyRowMapper.newInstance(Item.class);
     }
 }
