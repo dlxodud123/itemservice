@@ -1,6 +1,7 @@
 package hello.itemservice.repository.jpa;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import hello.itemservice.domain.Item;
 import hello.itemservice.domain.QItem;
@@ -47,8 +48,8 @@ public class JpaItemRepositoryV3 implements ItemRepository {
         return Optional.ofNullable(item);
     }
 
-    @Override
-    public List<Item> findAll(ItemSearchCond cond) {
+    // findAll() 리팩토링 하기 전 코드
+    public List<Item> findAllOld(ItemSearchCond cond) {
         String itemName = cond.getItemName();
         Integer maxPrice = cond.getMaxPrice();
 
@@ -67,5 +68,29 @@ public class JpaItemRepositoryV3 implements ItemRepository {
                 .fetch();
 
         return result;
+    }
+
+    public List<Item> findAll(ItemSearchCond cond) {
+        String itemName = cond.getItemName();
+        Integer maxPrice = cond.getMaxPrice();
+
+        return query
+                .select(QItem.item)
+                .from(QItem.item)
+                .where(likeItemName(itemName), maxPrice(maxPrice))
+                .fetch();
+    }
+
+    private BooleanExpression likeItemName(String itemName){
+        if (StringUtils.hasText(itemName)){
+            return QItem.item.itemName.like("%" + itemName + "%");
+        }
+        return null;
+    }
+    private BooleanExpression maxPrice(Integer maxPrice) {
+        if (maxPrice != null){
+            return QItem.item.price.loe(maxPrice);
+        }
+        return null;
     }
 }
